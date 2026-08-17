@@ -1,0 +1,12 @@
+customer_id,name,email,phone,city,age,registration_date,total_spent
+C001,Rahul Sharma,rahul@gmail.com,9876543210.0,Pune,25.0,2026-01-15,12500
+C002,Priya Patil,priya@gmail.com,9876543211.0,Mumbai,29.0,2026-01-18,18750
+C003,Amit Kumar,amit@gmail.com,NOT_AVAILABLE,Delhi,31.0,2026-02-02,9500
+C004,Neha Joshi,neha@gmail.com,9876543213.0,Pune,27.5,2026-02-10,22000
+C005,Rohit Singh,rohit@gmail.com,9876543214.0,Bangalore,27.0,2026-02-15,15000
+C007,Anjali Mehta,anjali@gmail.com,9876543216.0,Hyderabad,24.0,2026-03-01,7200
+C008,Vikas Gupta,NOT_AVAILABLE,9876543217.0,Pune,35.0,2026-03-05,31000
+C009,Sneha Kulkarni,sneha@gmail.com,9876543218.0,Pune,27.75,2026-03-10,8500
+C010,Arjun Rao,arjun@gmail.com,9876543219.0,Chennai,28.0,2026-03-15,17400
+C011,Karan Shah,karan@gmail.com,9876543220.0,Mumbai,32.0,2026-03-20,26500
+C012,Meena Desai,meena@gmail.com,9876543221.0,Pune,26.0,2026-03-25,11900

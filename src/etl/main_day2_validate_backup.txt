@@ -1,0 +1,118 @@
+import pandas as pd
+from pathlib import Path
+
+
+# EXTRACT MACHINE
+
+
+def extract():
+    project_root = Path(__file__).resolve().parents[2]  # Address of main.py
+    input_path = project_root / "src" / "data" / "raw" / "customers.csv"  # Address of customer.csv
+
+    df = pd.read_csv(input_path)
+
+    print("Data extracted successfully!")
+    print("Rows:", len(df))
+    print("Columns:", len(df.columns))
+
+    return df
+
+
+df = extract()
+
+print("\n--- Extracted Data ---")
+
+print(df)
+
+
+# TRANSFORM MACHINE
+
+def transform(df):
+    print("\n--- Starting Transformation ---")
+
+    # Standardize email addresses
+    df["email"] = df["email"].str.lower().str.strip()
+
+    # Remove duplicate customers
+    df = df.drop_duplicates(
+        subset=["email", "phone"],
+        keep="first"
+    )
+
+    # Handle missing values
+    df["phone"] = df["phone"].fillna("NOT_AVAILABLE")
+    df["email"] = df["email"].fillna("NOT_AVAILABLE")
+    df["age"] = df["age"].fillna(df["age"].median())
+
+    # Fix invalid ages
+    invalid_age = (df["age"] < 18) | (df["age"] > 100)
+
+    median_age = df.loc[~invalid_age, "age"].median()
+
+    df.loc[invalid_age, "age"] = median_age
+
+    return df
+
+df = transform(df)
+
+print("\n--- Transformed Data ---")
+pd.set_option("display.max_columns", None)
+print(df)
+
+print("\n--- Transformed Data Info ---")
+print("Rows:", len(df))
+print("Columns:", len(df.columns))
+
+
+# VALIDATE MACHINE
+
+
+def validate(df):
+    print("\n--- Validation Results ---")
+
+
+#   VALIDATE MISSING VALUES
+
+    missing_values = df.isnull().sum()
+
+    print("\nMissing values:")
+    print(missing_values)
+
+#   VALIDATE DUPLICATE COUNTS
+
+    duplicate_count = df.duplicated(
+        subset=["email", "phone"]
+    ).sum()
+
+    print("\nDuplicate customers:", duplicate_count)
+
+
+#   Validate invalid ages
+
+    invalid_age_count = (
+            (df["age"] < 18) | (df["age"] > 100)
+    ).sum()
+
+    print("\nInvalid ages:", invalid_age_count)
+
+    return df
+
+df = validate(df)
+
+# LOAD MACHINE
+
+
+def load(df):
+    logging.info("Starting data load")
+
+    project_root = Path(__file__).resolve().parents[2]
+    output_path = project_root / "src" / "data" / "processed" / "customers_cleaned.csv"
+
+    df.to_csv(output_path, index=False)
+
+    logging.info("Data loaded successfully")
+
+    print("\nCleaned data saved successfully!")
+    print("Output file:", output_path)
+
+load(df)

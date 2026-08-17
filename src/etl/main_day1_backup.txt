@@ -1,0 +1,86 @@
+import pandas as pd
+
+# Extract: read raw customer data
+df = pd.read_csv("../data/raw/customers.csv")
+
+print("Customer data loaded successfully!")
+print(df)
+
+print("\n--- Data Information ---")
+print(df.info())
+
+print("\n--- Missing Values ---")
+print(df.isnull().sum())
+
+print("\n--- Duplicate Rows ---")
+print(df.duplicated(subset=["email", "phone"]))
+
+print("\n--- Basic Statistics ---")
+print(df.describe())
+
+# Transform: standardize email format
+df["email"] = df["email"].str.lower().str.strip()
+
+print("\n--- Cleaned Emails ---")
+print(df["email"])
+
+df = df.drop_duplicates(subset=["email", "phone"], keep="first")
+
+print("\n--- Data after removing duplicates ---")
+print(df)
+
+print("Handle missing phone For a phone number, we don't know the actual number, so we'll use a clear placeholder")
+
+# Handle missing values
+df["phone"] = df["phone"].fillna("NOT_AVAILABLE")
+df["email"] = df["email"].fillna("NOT_AVAILABLE")
+df["age"] = df["age"].fillna(df["age"].median())
+
+print("\n--- Missing Values After Cleaning ---")
+print(df.isnull().sum())
+
+
+pd.set_option("display.max_columns", None)
+print(df)
+
+# Detect invalid ages
+invalid_age = (df["age"] < 18) | (df["age"] > 100)
+
+# Find median of valid ages
+median_age = df.loc[~invalid_age, "age"].median()
+
+# Replace invalid ages with median
+df.loc[invalid_age, "age"] = median_age
+
+print("\n--- Age After Validation ---")
+print(df[["customer_id", "age"]])
+
+
+#final quality check
+
+print("\n--- Final Data Quality Check ---")
+
+print("Rows:", len(df))
+print("Columns:", len(df.columns))
+
+print("\nMissing values:")
+print(df.isnull().sum())
+
+print("\nDuplicate customers:")
+print(df.duplicated(subset=["email", "phone"]).sum())
+
+print("\nInvalid ages:")
+print(((df["age"] < 18) | (df["age"] > 100)).sum())
+
+
+
+
+
+# Load: save cleaned data
+output_path = "../data/processed/customers_cleaned.csv"
+
+df.to_csv(output_path, index=False)
+
+print("\nCleaned data saved successfully!")
+print("Output file:", output_path)
+
